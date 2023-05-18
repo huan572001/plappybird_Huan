@@ -14,8 +14,9 @@ export class MenuManager extends Component {
   private audio: Node = null;
   @property({ type: Node })
   private score: Node = null;
+  static statusGame: boolean = true;
   start() {
-    if (localStorage.getItem('statusGame') === 'gameover') {
+    if (!MenuManager.statusGame) {
       this.score.getChildByName('pointBest').getComponent(Label).string =
         localStorage.getItem('pointBest').toString();
       this.score.getChildByName('point').getComponent(Label).string =

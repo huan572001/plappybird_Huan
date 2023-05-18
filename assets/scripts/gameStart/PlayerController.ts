@@ -13,34 +13,33 @@ import {
   Vec3,
   director,
   find,
+  Node,
 } from 'cc';
 import { Store } from './Store';
+import { MenuManager } from '../menu/MenuManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
 export class PlayerController extends Component {
   start() {
-    // this.node.addComponent(RigidBody2D);
-    // this.node.addComponent(BoxCollider2D);
-    // this.node.getComponent(RigidBody2D).enabledContactListener = true;
+    input.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
     input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
     this.checkCrash();
   }
 
-  update(deltaTime: number) {}
-  checkCrash() {
+  update(deltaTime: number) {
+    if (this.node.position.y < 50) {
+      this.gameOver();
+    }
+  }
+  private checkCrash() {
     let colleder = this.node.getComponent(Collider2D);
     if (colleder) {
       colleder.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
     }
   }
 
-  onBeginContact(
-    selfCollider: Collider2D,
-    otherCollider: Collider2D,
-    contact: IPhysics2DContact
-  ) {
-    // console.log(find('store'));
+  private gameOver(): void {
     const point = find('store').getComponent(Store).point.toString();
     // director.addPersistRootNode(find('store'));
     if (localStorage.getItem('pointBest')) {
@@ -52,13 +51,26 @@ export class PlayerController extends Component {
       localStorage.setItem('point', point);
       localStorage.setItem('pointBest', point);
     }
-    localStorage.setItem('statusGame', 'gameover');
+    MenuManager.statusGame = false;
     director.loadScene('menu');
   }
-  onMouseUp(event: EventMouse) {
+  private onBeginContact(
+    selfCollider: Collider2D,
+    otherCollider: Collider2D,
+    contact: IPhysics2DContact
+  ): void {
+    this.gameOver();
+  }
+  private onMouseUp(event: EventMouse): void {
+    if (event.getButton() === 0) {
+      this.node.angle = -20;
+    } else if (event.getButton() === 2) {
+    }
+  }
+  private onMouseDown(event: EventMouse): void {
     if (event.getButton() === 0) {
       this.node.getComponent(RigidBody2D).linearVelocity = new Vec2(0, 5);
-      // this.node.rotation.z = 5;
+      this.node.angle = 50;
     } else if (event.getButton() === 2) {
     }
   }

@@ -7,6 +7,7 @@ import {
   view,
   Label,
   director,
+  Vec3,
 } from 'cc';
 import { PlayerController } from './PlayerController';
 import { Store } from './Store';
@@ -20,6 +21,8 @@ export class GameManager extends Component {
   public GameOver: Node = null;
   @property({ type: Node })
   private stote: Node = null;
+  @property({ type: Node })
+  private Bg: Node = null;
   @property({ type: Label })
   public pointLabel: Label = null;
   @property({ type: Prefab })
@@ -43,13 +46,23 @@ export class GameManager extends Component {
       this.PipeNode.addChild(this.arrPipe[i]);
     }
   }
-
-  random() {
-    const heightPine = Math.floor(Math.random() * 200);
-    return heightPine;
+  random(): number {
+    return Math.floor(Math.random() * 200);
   }
-
   update(deltaTime: number) {
+    if (this.Bg.position.x < -view.getVisibleSize().width) {
+      this.Bg.position = new Vec3(
+        view.getVisibleSize().width / 2,
+        this.Bg.position.y,
+        0
+      );
+    } else {
+      this.Bg.position = new Vec3(
+        this.Bg.position.x - 2,
+        this.Bg.position.y,
+        0
+      );
+    }
     for (let i = 0; i < this.arrPipe.length; i++) {
       if (this.arrPipe[i].position.x < 0) {
         this.point += 1;
