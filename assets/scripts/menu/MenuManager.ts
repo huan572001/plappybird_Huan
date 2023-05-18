@@ -15,21 +15,11 @@ export class MenuManager extends Component {
   @property({ type: Node })
   private score: Node = null;
   start() {
-    // if (true) {
-    if (find('store')) {
-      const point = find('store').getComponent(Store).point.toString();
-      // this.score.getChildByName('point').getComponent(Label).string = point;
-      // if (localStorage.getItem('point')) {
-      //   console.log(localStorage.getItem('point'));
-
-      //   if (point > localStorage.getItem('point')) {
-      //     localStorage.setItem('point', point);
-      //   }
-      // } else {
-      //   localStorage.setItem('point', point);
-      // }
-      // this.score.getChildByName('pointBest').getComponent(Label).string =
-      //   localStorage.getItem('point').toString();
+    if (localStorage.getItem('statusGame') === 'gameover') {
+      this.score.getChildByName('pointBest').getComponent(Label).string =
+        localStorage.getItem('pointBest').toString();
+      this.score.getChildByName('point').getComponent(Label).string =
+        localStorage.getItem('point').toString();
       this.BtnStart.active = false;
       this.BtnRestart.active = true;
       this.score.active = true;

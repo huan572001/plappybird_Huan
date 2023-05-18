@@ -14,6 +14,7 @@ import {
   director,
   find,
 } from 'cc';
+import { Store } from './Store';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -40,8 +41,18 @@ export class PlayerController extends Component {
     contact: IPhysics2DContact
   ) {
     // console.log(find('store'));
-
-    director.addPersistRootNode(find('store'));
+    const point = find('store').getComponent(Store).point.toString();
+    // director.addPersistRootNode(find('store'));
+    if (localStorage.getItem('pointBest')) {
+      if (point > localStorage.getItem('pointBest')) {
+        localStorage.setItem('pointBest', point);
+      }
+      localStorage.setItem('point', point);
+    } else {
+      localStorage.setItem('point', point);
+      localStorage.setItem('pointBest', point);
+    }
+    localStorage.setItem('statusGame', 'gameover');
     director.loadScene('menu');
   }
   onMouseUp(event: EventMouse) {
