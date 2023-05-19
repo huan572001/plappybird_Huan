@@ -8,9 +8,12 @@ import {
   Label,
   director,
   Vec3,
+  Sprite,
+  Color,
 } from 'cc';
 import { PlayerController } from './PlayerController';
 import { Store } from './Store';
+import { MenuManager } from '../menu/MenuManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -18,11 +21,9 @@ export class GameManager extends Component {
   @property({ type: Node })
   public PipeNode: Node = null;
   @property({ type: Node })
-  public GameOver: Node = null;
-  @property({ type: Node })
-  private stote: Node = null;
-  @property({ type: Node })
   private Bg: Node = null;
+  @property({ type: Sprite })
+  private bird: Sprite = null;
   @property({ type: Label })
   public pointLabel: Label = null;
   @property({ type: Prefab })
@@ -36,6 +37,7 @@ export class GameManager extends Component {
   private point: number = 0;
   //   public NodePipe: Node;
   start() {
+    this.bird.color = new Color(localStorage.getItem('color'));
     this.pointLabel.string = `${this.point}`;
     for (let i = 0; i < this.arrPipe.length; i++) {
       this.arrPipe[i] = instantiate(this.pipePrefab);
@@ -66,7 +68,6 @@ export class GameManager extends Component {
     for (let i = 0; i < this.arrPipe.length; i++) {
       if (this.arrPipe[i].position.x < 0) {
         this.point += 1;
-        this.stote.getComponent(Store).point = this.point;
         this.pointLabel.string = this.point.toString();
         this.arrPipe[i].setPosition(view.getVisibleSize().width, this.random());
       }
