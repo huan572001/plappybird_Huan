@@ -14,7 +14,7 @@ import {
   instantiate,
 } from 'cc';
 import { GameManager } from '../gameStart/GameManagerController';
-import { COLOR } from '../constant/constant';
+import { COLOR, POINT, POINTBEST } from '../constant/constant';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuManager')
@@ -47,6 +47,10 @@ export class MenuManager extends Component {
   private prefabBoxColer: Prefab = null;
   @property(Sprite)
   private bird: Sprite = null;
+  @property(Label)
+  private pointBestLabel: Label = null;
+  @property(Label)
+  private pointLabel: Label = null;
   static statusGame: boolean = true;
   private sizeBoxColer = 7;
   private arrBoxColer: Node[] = [];
@@ -62,16 +66,12 @@ export class MenuManager extends Component {
   private statusAudio: boolean = true;
   protected start(): void {
     if (!MenuManager.statusGame) {
-      this.score.getChildByName('pointBest').getComponent(Label).string =
-        localStorage.getItem('pointBest').toString();
-      this.score.getChildByName('point').getComponent(Label).string =
-        localStorage.getItem('point').toString();
+      this.pointBestLabel.string = localStorage.getItem(POINTBEST);
+      this.pointLabel.string = localStorage.getItem(POINT);
       this.btnStart.active = false;
-      this.btnRestart.active = true;
       this.score.active = true;
     } else {
       this.btnStart.active = true;
-      this.btnRestart.active = false;
       this.score.active = false;
     }
   }
