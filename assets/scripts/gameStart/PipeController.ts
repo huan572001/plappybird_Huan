@@ -1,34 +1,18 @@
-import {
-  _decorator,
-  BoxCollider2D,
-  Collider2D,
-  Component,
-  RigidBody2D,
-  Vec3,
-} from 'cc';
+import { _decorator, Collider2D, Component, Vec3 } from 'cc';
+import { STEP } from '../constant/constant';
 const { ccclass, property } = _decorator;
 
 @ccclass('PipeController')
 export class PipeController extends Component {
   start() {}
-  private step: number = 2;
 
   update(deltaTime: number) {
     this.node.position = new Vec3(
-      this.node.position.x - this.step,
+      this.node.position.x - STEP * deltaTime,
       this.node.position.y,
       0
     );
-    this.node
-      .getChildByName('pipeBottom')
-      .getChildByName('body')
-      .getComponent(Collider2D)
-      .apply();
-
-    this.node
-      .getChildByName('pipeTop')
-      .getChildByName('body')
-      .getComponent(Collider2D)
-      .apply();
+    this.node.getChildByName('pipeBottom').getComponent(Collider2D).apply();
+    this.node.getChildByName('pipeTop').getComponent(Collider2D).apply();
   }
 }

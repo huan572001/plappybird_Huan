@@ -14,6 +14,7 @@ import {
   instantiate,
 } from 'cc';
 import { GameManager } from '../gameStart/GameManagerController';
+import { COLOR } from '../constant/constant';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuManager')
@@ -29,7 +30,7 @@ export class MenuManager extends Component {
   @property({ type: Node })
   private score: Node = null;
   @property(AudioSource)
-  private _audioSource: AudioSource = null;
+  private audioSource: AudioSource = null;
   @property(Node)
   private openAudio: Node = null;
   @property(Node)
@@ -90,9 +91,6 @@ export class MenuManager extends Component {
       () => this.onSettingColer(true),
       this
     );
-    const audioSource = this.audio.getComponent(AudioSource)!;
-    assert(audioSource);
-    this._audioSource = audioSource;
     this.audio.on(Node.EventType.TOUCH_START, this.playAudio, this);
   }
 
@@ -116,7 +114,7 @@ export class MenuManager extends Component {
         Node.EventType.MOUSE_DOWN,
         () => {
           this.bird.color = new Color(this.arrColer[i]);
-          localStorage.setItem('color', this.arrColer[i]);
+          localStorage.setItem(COLOR, this.arrColer[i]);
         },
         this
       );
@@ -130,12 +128,12 @@ export class MenuManager extends Component {
 
   private playAudio(): void {
     if (this.statusAudio) {
-      this._audioSource.play();
+      this.audioSource.play();
       this.statusAudio = false;
       this.closeAudio.active = false;
       this.openAudio.active = true;
     } else {
-      this._audioSource.pause();
+      this.audioSource.pause();
       this.statusAudio = true;
       this.openAudio.active = false;
       this.closeAudio.active = true;

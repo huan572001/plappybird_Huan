@@ -13,9 +13,9 @@ import {
   director,
   find,
 } from 'cc';
-import { Store } from './Store';
 import { MenuManager } from '../menu/MenuManager';
 import { GameManager } from './GameManagerController';
+import { POINT, POINTBEST } from '../constant/constant';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -52,14 +52,14 @@ export class PlayerController extends Component {
 
   private gameOver(): void {
     const point = GameManager.point;
-    if (localStorage.getItem('pointBest')) {
-      if (point > parseInt(localStorage.getItem('pointBest'))) {
-        localStorage.setItem('pointBest', point.toString());
+    if (localStorage.getItem(POINTBEST)) {
+      if (point > parseInt(localStorage.getItem(POINTBEST))) {
+        localStorage.setItem(POINTBEST, point.toString());
       }
-      localStorage.setItem('point', point.toString());
+      localStorage.setItem(POINT, point.toString());
     } else {
-      localStorage.setItem('point', point.toString());
-      localStorage.setItem('pointBest', point.toString());
+      localStorage.setItem(POINT, point.toString());
+      localStorage.setItem(POINTBEST, point.toString());
     }
     MenuManager.statusGame = false;
     director.loadScene('menu');

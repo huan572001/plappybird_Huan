@@ -298,7 +298,7 @@
     "score": {
       "__id__": 62
     },
-    "_audioSource": null,
+    "audioSource": null,
     "openAudio": {
       "__id__": 29
     },
