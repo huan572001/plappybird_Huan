@@ -9,6 +9,7 @@ import {
   Vec3,
   Sprite,
   Color,
+  AudioSource,
 } from 'cc';
 import { STEP } from '../constant/constant';
 const { ccclass, property } = _decorator;
@@ -25,6 +26,8 @@ export class GameManager extends Component {
   private pointLabel: Label = null;
   @property({ type: Prefab })
   private pipePrefab: Prefab | null = null;
+  @property(AudioSource)
+  private audioSource: AudioSource = null;
   private arrPipe: Node[] = [null, null, null, null];
   static point: number = 0;
   private statustPipe: Boolean = true;
@@ -35,6 +38,7 @@ export class GameManager extends Component {
       : null;
     this.pointLabel.string = `${GameManager.point}`;
     this.initPipe();
+    this.audioSource.play();
   }
   private initPipe(): void {
     for (let i = 0; i < this.arrPipe.length; i++) {
