@@ -29,7 +29,9 @@ export class GameManager extends Component {
   static point: number = 0;
   private statustPipe: Boolean = true;
   protected start() {
-    this.bird.color = new Color(localStorage.getItem('color'));
+    localStorage.getItem('color')
+      ? (this.bird.color = new Color(localStorage.getItem('color')))
+      : null;
     this.pointLabel.string = `${GameManager.point}`;
     this.initPipe();
   }
@@ -68,7 +70,7 @@ export class GameManager extends Component {
       );
     }
     for (let i = 0; i < this.arrPipe.length; i++) {
-      if (this.arrPipe[i].position.x < 0 && this.statustPipe) {
+      if (this.arrPipe[i]?.position.x < 0 && this.statustPipe) {
         this.statustPipe = false;
         GameManager.point += 1;
         this.pointLabel.string = GameManager.point.toString();
