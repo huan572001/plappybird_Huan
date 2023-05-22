@@ -10,26 +10,37 @@ import {
   Contact2DType,
   IPhysics2DContact,
   Vec2,
-  Vec3,
   director,
   find,
-  Node,
 } from 'cc';
 import { Store } from './Store';
 import { MenuManager } from '../menu/MenuManager';
+import { GameManager } from './GameManagerController';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
 export class PlayerController extends Component {
   start() {
     input.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
-    input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
     this.checkCrash();
   }
 
   update(deltaTime: number) {
     if (this.node.position.y < 50) {
       this.gameOver();
+    }
+    if (this.node.getComponent(RigidBody2D).linearVelocity.y < 0) {
+      if (this.node.angle > -50) {
+        this.node.angle =
+          this.node.angle +
+          this.node.getComponent(RigidBody2D).linearVelocity.y;
+      }
+    } else {
+      if (this.node.angle < 50) {
+        this.node.angle =
+          this.node.angle +
+          this.node.getComponent(RigidBody2D).linearVelocity.y;
+      }
     }
   }
   private checkCrash() {
@@ -40,18 +51,21 @@ export class PlayerController extends Component {
   }
 
   private gameOver(): void {
-    const point = find('store').getComponent(Store).point.toString();
-    // director.addPersistRootNode(find('store'));
+    const point = GameManager.point;
     if (localStorage.getItem('pointBest')) {
-      if (point > localStorage.getItem('pointBest')) {
-        localStorage.setItem('pointBest', point);
+      if (point > parseInt(localStorage.getItem('pointBest'))) {
+        localStorage.setItem('pointBest', point.toString());
       }
-      localStorage.setItem('point', point);
+      localStorage.setItem('point', point.toString());
+      console.log('1', point);
     } else {
-      localStorage.setItem('point', point);
-      localStorage.setItem('pointBest', point);
+      console.log('2');
+      localStorage.setItem('point', point.toString());
+      localStorage.setItem('pointBest', point.toString());
     }
+    // console.log('3');
     MenuManager.statusGame = false;
+    // GameManager.point = 0;
     director.loadScene('menu');
   }
   private onBeginContact(
@@ -61,16 +75,9 @@ export class PlayerController extends Component {
   ): void {
     this.gameOver();
   }
-  private onMouseUp(event: EventMouse): void {
-    if (event.getButton() === 0) {
-      this.node.angle = -20;
-    } else if (event.getButton() === 2) {
-    }
-  }
   private onMouseDown(event: EventMouse): void {
     if (event.getButton() === 0) {
-      this.node.getComponent(RigidBody2D).linearVelocity = new Vec2(0, 5);
-      this.node.angle = 50;
+      this.node.getComponent(RigidBody2D).linearVelocity = new Vec2(0, 7);
     } else if (event.getButton() === 2) {
     }
   }

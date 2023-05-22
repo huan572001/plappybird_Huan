@@ -2,12 +2,12 @@
   "ver": "1.1.43",
   "importer": "prefab",
   "imported": true,
-  "uuid": "b77f5992-e8dc-4160-94d1-57e9cd7c5ba6",
+  "uuid": "1c38acfd-c9b2-4fbb-943c-7deaba23a375",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Gameover"
+    "syncNodeName": "boxColer"
   }
 }

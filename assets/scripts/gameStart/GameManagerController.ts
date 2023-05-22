@@ -6,39 +6,32 @@ import {
   Prefab,
   view,
   Label,
-  director,
   Vec3,
   Sprite,
   Color,
+  Collider,
+  Collider2D,
 } from 'cc';
-import { PlayerController } from './PlayerController';
-import { Store } from './Store';
-import { MenuManager } from '../menu/MenuManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
 export class GameManager extends Component {
   @property({ type: Node })
-  public PipeNode: Node = null;
+  private PipeNode: Node = null;
   @property({ type: Node })
   private Bg: Node = null;
   @property({ type: Sprite })
   private bird: Sprite = null;
   @property({ type: Label })
-  public pointLabel: Label = null;
+  private pointLabel: Label = null;
   @property({ type: Prefab })
-  public pipePrefab: Prefab | null = null;
-  @property({ type: Prefab })
-  public gameOverPrefab: Prefab | null = null;
-  @property({ type: PlayerController })
-  public playerCtrl: PlayerController | null = null;
+  private pipePrefab: Prefab | null = null;
 
-  public arrPipe: Node[] = [null, null, null];
-  private point: number = 0;
-  //   public NodePipe: Node;
+  private arrPipe: Node[] = [null, null, null];
+  static point: number = 0;
   start() {
     this.bird.color = new Color(localStorage.getItem('color'));
-    this.pointLabel.string = `${this.point}`;
+    this.pointLabel.string = `${GameManager.point}`;
     for (let i = 0; i < this.arrPipe.length; i++) {
       this.arrPipe[i] = instantiate(this.pipePrefab);
       this.arrPipe[i].setPosition(
@@ -46,6 +39,17 @@ export class GameManager extends Component {
         this.random()
       );
       this.PipeNode.addChild(this.arrPipe[i]);
+      this.arrPipe[i]
+        .getChildByName('pipeBottom')
+        .getChildByName('body')
+        .getComponent(Collider2D)
+        .apply();
+
+      this.arrPipe[i]
+        .getChildByName('pipeTop')
+        .getChildByName('body')
+        .getComponent(Collider2D)
+        .apply();
     }
   }
   random(): number {
@@ -67,8 +71,8 @@ export class GameManager extends Component {
     }
     for (let i = 0; i < this.arrPipe.length; i++) {
       if (this.arrPipe[i].position.x < 0) {
-        this.point += 1;
-        this.pointLabel.string = this.point.toString();
+        GameManager.point += 1;
+        this.pointLabel.string = GameManager.point.toString();
         this.arrPipe[i].setPosition(view.getVisibleSize().width, this.random());
       }
     }

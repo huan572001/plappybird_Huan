@@ -12,8 +12,11 @@ import {
   EventMouse,
   UITransform,
   view,
+  Prefab,
+  instantiate,
 } from 'cc';
 import { Store } from '../gameStart/Store';
+import { GameManager } from '../gameStart/GameManagerController';
 const { ccclass, property } = _decorator;
 
 @ccclass('MenuManager')
@@ -41,11 +44,15 @@ export class MenuManager extends Component {
   @property(Node)
   private btnBack: Node = null;
   @property(Node)
-  private color: Node = null;
+  private boxColor: Node = null;
+  @property(Prefab)
+  private prefabBoxColer: Prefab = null;
   @property(Sprite)
   private bird: Sprite = null;
   static statusGame: boolean = true;
   private widthScane = view.getVisibleSize().width;
+  private sizeBoxColer = 7;
+  private arrBoxColer: Node[] = [];
   private arrColer: string[] = [
     '#FF0000',
     '#FF9900',
@@ -56,10 +63,7 @@ export class MenuManager extends Component {
     '#FF00CC',
   ];
   private statusAudio: boolean = true;
-  start() {
-    this.color
-      .getComponent(UITransform)
-      .setContentSize(this.widthScane / 2, 50);
+  protected start(): void {
     if (!MenuManager.statusGame) {
       this.score.getChildByName('pointBest').getComponent(Label).string =
         localStorage.getItem('pointBest').toString();
@@ -74,7 +78,10 @@ export class MenuManager extends Component {
       this.score.active = false;
     }
   }
-  onLoad() {
+
+  protected onLoad(): void {
+    this.initColor();
+    this.eventColer();
     this.btnStart.on(Node.EventType.TOUCH_START, this.onStartGame, this);
     this.btnRestart.on(Node.EventType.TOUCH_START, this.onStartGame, this);
     this.btnSetting.on(
@@ -87,28 +94,45 @@ export class MenuManager extends Component {
       () => this.onSettingColer(true),
       this
     );
-
-    this.color.on(Node.EventType.MOUSE_DOWN, this.onColer, this);
     const audioSource = this.audio.getComponent(AudioSource)!;
     assert(audioSource);
     this._audioSource = audioSource;
     this.audio.on(Node.EventType.TOUCH_START, this.playAudio, this);
   }
-  private onColer(event: EventMouse): void {
-    const mousePos = event.getLocation(); // Lấy tọa độ chuột
-    const indexColor = Math.floor(
-      (mousePos.x / 2 - this.widthScane / 4) / (this.widthScane / 2 / 7)
-    );
-    console.log(indexColor);
 
-    this.bird.color = new Color(this.arrColer[indexColor]);
-    localStorage.setItem('color', this.arrColer[indexColor]);
+  private initColor(): void {
+    for (let i = 0; i < this.sizeBoxColer; i++) {
+      this.arrBoxColer.push(instantiate(this.prefabBoxColer));
+      this.boxColor.addChild(this.arrBoxColer[i]);
+      this.arrBoxColer[i].setPosition(
+        -(this.sizeBoxColer * 50) / 2 + i * 50,
+        100
+      );
+      this.arrBoxColer[i].getComponent(Sprite).color = new Color(
+        this.arrColer[i]
+      );
+    }
   }
-  public onSettingColer(status: boolean): void {
+
+  private eventColer(): void {
+    for (let i = 0; i < this.arrBoxColer.length; i++) {
+      this.arrBoxColer[i].on(
+        Node.EventType.MOUSE_DOWN,
+        () => {
+          this.bird.color = new Color(this.arrColer[i]);
+          localStorage.setItem('color', this.arrColer[i]);
+        },
+        this
+      );
+    }
+  }
+
+  private onSettingColer(status: boolean): void {
     this.mapGame.active = status;
     this.colerBird.active = !status;
   }
-  public playAudio(): void {
+
+  private playAudio(): void {
     if (this.statusAudio) {
       this._audioSource.play();
       this.statusAudio = false;
@@ -121,8 +145,9 @@ export class MenuManager extends Component {
       this.closeAudio.active = true;
     }
   }
-  public onStartGame(): void {
+  private onStartGame(): void {
+    GameManager.point = 0;
     director.loadScene('game');
   }
-  update(deltaTime: number) {}
+  protected update(deltaTime: number): void {}
 }
