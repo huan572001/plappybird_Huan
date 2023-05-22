@@ -9,13 +9,10 @@ import {
   assert,
   Color,
   Sprite,
-  EventMouse,
-  UITransform,
   view,
   Prefab,
   instantiate,
 } from 'cc';
-import { Store } from '../gameStart/Store';
 import { GameManager } from '../gameStart/GameManagerController';
 const { ccclass, property } = _decorator;
 
@@ -50,7 +47,6 @@ export class MenuManager extends Component {
   @property(Sprite)
   private bird: Sprite = null;
   static statusGame: boolean = true;
-  private widthScane = view.getVisibleSize().width;
   private sizeBoxColer = 7;
   private arrBoxColer: Node[] = [];
   private arrColer: string[] = [

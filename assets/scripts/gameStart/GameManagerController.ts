@@ -9,7 +9,6 @@ import {
   Vec3,
   Sprite,
   Color,
-  Collider,
   Collider2D,
 } from 'cc';
 const { ccclass, property } = _decorator;
@@ -26,12 +25,15 @@ export class GameManager extends Component {
   private pointLabel: Label = null;
   @property({ type: Prefab })
   private pipePrefab: Prefab | null = null;
-
-  private arrPipe: Node[] = [null, null, null];
+  private arrPipe: Node[] = [null, null, null, null];
   static point: number = 0;
-  start() {
+  private statustPipe: Boolean = true;
+  protected start() {
     this.bird.color = new Color(localStorage.getItem('color'));
     this.pointLabel.string = `${GameManager.point}`;
+    this.initPipe();
+  }
+  private initPipe(): void {
     for (let i = 0; i < this.arrPipe.length; i++) {
       this.arrPipe[i] = instantiate(this.pipePrefab);
       this.arrPipe[i].setPosition(
@@ -52,16 +54,12 @@ export class GameManager extends Component {
         .apply();
     }
   }
-  random(): number {
+  private random(): number {
     return Math.floor(Math.random() * 200);
   }
-  update(deltaTime: number) {
-    if (this.Bg.position.x < -view.getVisibleSize().width) {
-      this.Bg.position = new Vec3(
-        view.getVisibleSize().width / 2,
-        this.Bg.position.y,
-        0
-      );
+  protected update(deltaTime: number) {
+    if (this.Bg.position.x < -view.getVisibleSize().width / 2) {
+      this.Bg.position = new Vec3(480, this.Bg.position.y, 0);
     } else {
       this.Bg.position = new Vec3(
         this.Bg.position.x - 2,
@@ -70,9 +68,13 @@ export class GameManager extends Component {
       );
     }
     for (let i = 0; i < this.arrPipe.length; i++) {
-      if (this.arrPipe[i].position.x < 0) {
+      if (this.arrPipe[i].position.x < 0 && this.statustPipe) {
+        this.statustPipe = false;
         GameManager.point += 1;
         this.pointLabel.string = GameManager.point.toString();
+      }
+      if (this.arrPipe[i].position.x < view.getVisibleSize().width - 300 * 4) {
+        this.statustPipe = true;
         this.arrPipe[i].setPosition(view.getVisibleSize().width, this.random());
       }
     }

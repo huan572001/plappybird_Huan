@@ -57,15 +57,11 @@ export class PlayerController extends Component {
         localStorage.setItem('pointBest', point.toString());
       }
       localStorage.setItem('point', point.toString());
-      console.log('1', point);
     } else {
-      console.log('2');
       localStorage.setItem('point', point.toString());
       localStorage.setItem('pointBest', point.toString());
     }
-    // console.log('3');
     MenuManager.statusGame = false;
-    // GameManager.point = 0;
     director.loadScene('menu');
   }
   private onBeginContact(
