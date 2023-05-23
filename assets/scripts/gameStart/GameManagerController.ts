@@ -11,7 +11,7 @@ import {
   Color,
   AudioSource,
 } from 'cc';
-import { STEP } from '../constant/constant';
+import { COLOR, STEP } from '../constant/constant';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -33,8 +33,8 @@ export class GameManager extends Component {
   private statustPipe: Boolean = true;
   private withScreen: number = view.getVisibleSize().width;
   protected start() {
-    localStorage.getItem('color')
-      ? (this.bird.color = new Color(localStorage.getItem('color')))
+    localStorage.getItem(COLOR)
+      ? (this.bird.color = new Color(localStorage.getItem(COLOR)))
       : null;
     this.pointLabel.string = `${GameManager.point}`;
     this.initPipe();

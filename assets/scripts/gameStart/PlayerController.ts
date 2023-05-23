@@ -20,29 +20,32 @@ const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
 export class PlayerController extends Component {
-  start() {
+  protected start() {
     input.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
     this.checkCrash();
   }
 
-  update(deltaTime: number) {
+  protected update(deltaTime: number) {
+    this.animation();
+  }
+
+  private animation(): void {
+    let velocity_Y: number =
+      this.node.getComponent(RigidBody2D).linearVelocity.y;
     if (this.node.position.y < 50) {
       this.gameOver();
     }
-    if (this.node.getComponent(RigidBody2D).linearVelocity.y < 0) {
+    if (velocity_Y < 0) {
       if (this.node.angle > -50) {
-        this.node.angle =
-          this.node.angle +
-          this.node.getComponent(RigidBody2D).linearVelocity.y;
+        this.node.angle = this.node.angle + velocity_Y;
       }
     } else {
       if (this.node.angle < 50) {
-        this.node.angle =
-          this.node.angle +
-          this.node.getComponent(RigidBody2D).linearVelocity.y;
+        this.node.angle = this.node.angle + velocity_Y;
       }
     }
   }
+
   private checkCrash() {
     let colleder = this.node.getComponent(Collider2D);
     if (colleder) {
